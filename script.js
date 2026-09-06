@@ -1,130 +1,147 @@
-document.addEventListener("DOMContentLoaded", () => {
+```javascript
+// ==============================
+// نجوم وقلوب في الخلفية
+// ==============================
 
-/* ظهور الأقسام أثناء النزول */
+const stars = document.getElementById("stars");
 
-const revealElements = document.querySelectorAll(".reveal");
+const symbols = ["✦", "✧", "♡", "⋆", "✿"];
 
-const observer = new IntersectionObserver(
-(entries) => {
-
-```
-  entries.forEach((entry) => {
-
-    if (entry.isIntersecting) {
-
-      entry.target.classList.add("visible");
-
-      observer.unobserve(entry.target);
-
-    }
-
-  });
-
-},
-{
-  threshold: 0.12
-}
-```
-
-);
-
-revealElements.forEach((element) => {
-observer.observe(element);
-});
-
-/* نجوم وقلوب إضافية */
-
-const starsContainer = document.querySelector(".stars");
-
-if (starsContainer) {
-
-```
-const symbols = ["✦", "♡", "✧", "·"];
-
-for (let i = 0; i < 12; i++) {
+for (let i = 0; i < 35; i++) {
 
   const star = document.createElement("span");
 
   star.textContent =
     symbols[Math.floor(Math.random() * symbols.length)];
 
-  star.style.left = Math.random() * 95 + "%";
-  star.style.top = Math.random() * 95 + "%";
-
+  star.style.left = Math.random() * 100 + "%";
+  star.style.top = Math.random() * 100 + "%";
   star.style.fontSize =
-    8 + Math.random() * 15 + "px";
+    (8 + Math.random() * 14) + "px";
+
+  star.style.animationDuration =
+    (3 + Math.random() * 5) + "s";
 
   star.style.animationDelay =
     Math.random() * 4 + "s";
 
-  star.style.animationDuration =
-    2.5 + Math.random() * 3 + "s";
-
-  starsContainer.appendChild(star);
-}
-```
-
+  stars.appendChild(star);
 }
 
-/* حركة بسيطة لعالم بسملة */
 
-const universe = document.querySelector(".universe-box");
+// ==============================
+// ظهور العناصر أثناء النزول
+// ==============================
 
-if (universe) {
+const revealElements =
+  document.querySelectorAll(".reveal");
 
-```
-universe.addEventListener("mousemove", (event) => {
+const revealObserver =
+  new IntersectionObserver(
 
-  const rect = universe.getBoundingClientRect();
+    (entries) => {
+
+      entries.forEach((entry) => {
+
+        if (entry.isIntersecting) {
+
+          entry.target.classList.add("show");
+
+          revealObserver.unobserve(entry.target);
+
+        }
+
+      });
+
+    },
+
+    {
+      threshold: 0.12
+    }
+
+  );
+
+
+revealElements.forEach((element) => {
+  revealObserver.observe(element);
+});
+
+
+// ==============================
+// قلوب تظهر عند الضغط
+// ==============================
+
+document.addEventListener("click", function (event) {
+
+  const heart = document.createElement("div");
+
+  heart.textContent =
+    ["♡", "♥", "✦", "✧"][
+      Math.floor(Math.random() * 4)
+    ];
+
+  heart.style.position = "fixed";
+  heart.style.left = event.clientX + "px";
+  heart.style.top = event.clientY + "px";
+  heart.style.pointerEvents = "none";
+  heart.style.zIndex = "9999";
+  heart.style.color =
+    ["#df78a5", "#c59aed", "#f09aba"][
+      Math.floor(Math.random() * 3)
+    ];
+  heart.style.fontSize =
+    (18 + Math.random() * 18) + "px";
+
+  document.body.appendChild(heart);
+
+  heart.animate(
+
+    [
+      {
+        transform: "translateY(0) scale(.5)",
+        opacity: 1
+      },
+      {
+        transform:
+          `translateY(-100px) translateX(${Math.random() * 60 - 30}px) scale(1.3)`,
+        opacity: 0
+      }
+    ],
+
+    {
+      duration: 1000,
+      easing: "ease-out"
+    }
+
+  );
+
+  setTimeout(() => {
+    heart.remove();
+  }, 1000);
+
+});
+
+
+// ==============================
+// تأثير بسيط للماوس
+// ==============================
+
+document.addEventListener("mousemove", (event) => {
 
   const x =
-    (event.clientX - rect.left) / rect.width - 0.5;
+    (event.clientX / window.innerWidth - 0.5) * 10;
 
   const y =
-    (event.clientY - rect.top) / rect.height - 0.5;
+    (event.clientY / window.innerHeight - 0.5) * 10;
 
-  const center =
-    universe.querySelector(".universe-center");
+  document.querySelectorAll(".sparkle").forEach((item, index) => {
 
-  if (center) {
+    const speed = (index + 1) * 0.5;
 
-    center.style.transform =
-      `translate(calc(-50% + ${x * 12}px), calc(-50% + ${y * 12}px))`;
-  }
+    item.style.transform =
+      `translate(${x * speed}px, ${y * speed}px)`;
 
-});
-
-universe.addEventListener("mouseleave", () => {
-
-  const center =
-    universe.querySelector(".universe-center");
-
-  if (center) {
-
-    center.style.transform =
-      "translate(-50%, -50%)";
-  }
+  });
 
 });
 ```
-
-}
-
-/* حركة خفيفة للبطاقات */
-
-document.querySelectorAll(".thing").forEach((card) => {
-
-```
-card.addEventListener("mouseenter", () => {
-  card.style.boxShadow =
-    "0 25px 50px rgba(180,130,160,.18)";
-});
-
-card.addEventListener("mouseleave", () => {
-  card.style.boxShadow = "none";
-});
-```
-
-});
-
-});
